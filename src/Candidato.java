@@ -1,39 +1,16 @@
 package src;
 
-public class Candidato extends Pessoa {
+import java.util.Objects;
 
-    private int numero;
+public class Candidato extends Pessoa implements Comparable<Candidato> {
+
     private Partido partido;
-
-    public int getQtdVotos() {
-        return qtdVotos;
-    }
-
-    public void setQtdVotos() {
-        this.qtdVotos++;
-    }
-
     private int qtdVotos;
 
-    public Candidato(){}
-
-    public Candidato(int numero, Partido partido) {
-        this.numero = numero;
-        this.partido = partido;
-    }
-
-    public Candidato(String nome, String idade, int numero, Partido partido) {
+    public Candidato(String nome, String idade, Partido partido) {
         super(nome, idade);
-        this.numero = numero;
         this.partido = partido;
-    }
-
-    public int getNumero() {
-        return numero;
-    }
-
-    public void setNumero(int numero) {
-        this.numero = numero;
+        this.qtdVotos = 0;
     }
 
     public Partido getPartido() {
@@ -43,4 +20,25 @@ public class Candidato extends Pessoa {
     public void setPartido(Partido partido) {
         this.partido = partido;
     }
+
+    public int getQtdVotos() {
+        return qtdVotos;
+    }
+
+    public void setQtdVotos() {
+        this.qtdVotos++;
+    }
+
+    @Override
+    public String toString() {
+        return "Candidato" +
+                "\nnome: " +getNome()+
+                "\npartido: " + partido;
+    }
+
+    @Override
+    public int compareTo(Candidato o) {
+        return Integer.compare(o.getQtdVotos(), this.qtdVotos);
+    }
 }
+

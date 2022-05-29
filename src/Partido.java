@@ -3,12 +3,12 @@ package src;
 public class Partido {
 
     private String nome;
-    private String dataCriacao;
+    private String numero;
 
     public Partido(){}
-    public Partido(String nome, String dataCriacao) {
+    public Partido(String nome, String numero) {
         this.nome = nome;
-        this.dataCriacao = dataCriacao;
+        this.numero = numero;
     }
 
     public String getNome() {
@@ -18,12 +18,18 @@ public class Partido {
     public void setNome(String nome) {
         this.nome = nome;
     }
-
-    public String getDataCriacao() {
-        return dataCriacao;
+    public String getNumero() {
+        return numero;
     }
 
-    public void setDataCriacao(String dataCriacao) {
-        this.dataCriacao = dataCriacao;
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "nome='" + nome + '\'' +
+                ", numero='" + numero + "}";
     }
 }

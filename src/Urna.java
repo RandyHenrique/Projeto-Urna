@@ -1,70 +1,109 @@
 package src;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Urna {
+
+    private static int totalVotos;
+
     public static void main(String[] args) {
 
 
-        Partido partido1 = new Partido("PSL", "202020202");
-        Partido partido2 = new Partido("PT", "202020202");
-        Partido partido3 = new Partido("PSOL", "19051993");
+        Partido partido1 = new Partido("PSL", "13");
+        Partido partido2 = new Partido("PT", "17");
+        Partido partido3 = new Partido("PSOL", "50");
 
-        Candidato candidato1 = new Candidato("Niedson", "33", 17, partido1);
-        Candidato candidato2 = new Candidato("João", "30", 13, partido2);
-        Candidato candidato3 = new Candidato("Randerson", "29", 50, partido3);
+        Candidato candidato1 = new Candidato("Niedson", "33", partido1);
+        Candidato candidato2 = new Candidato("João", "30", partido2);
+        Candidato candidato3 = new Candidato("Randerson", "29", partido3);
 
-        Candidato[] candidatos = new Candidato[3];
+       List<Candidato> candidatos = new ArrayList<>();
 
-        candidatos[0] = candidato1;
-        candidatos[1] = candidato2;
-        candidatos[2] = candidato3;
+        candidatos.add(candidato1);
+        candidatos.add(candidato2);
+        candidatos.add(candidato3);
 
+        Scanner teclado = new Scanner(System.in);
 
         var rerpetir = true;
 
-        while (rerpetir) {
-            System.out.println("Digite o numero do candidato que você quer votar");
-            Scanner teclado = new Scanner(System.in);
-            var voto = teclado.nextInt();
+        do{
+            System.out.println("Escolha uma opção:\n1-votar\n2-Apuração dos votos");
 
-            boolean votou = false;
+            var menu = teclado.nextInt();
+            switch (menu) {
+                case 1 -> {
+                    System.out.println("Digite o numero do candidato que você quer votar");
+                    var voto = teclado.next();
+                    if (!voto.matches("^\\d+$")) {
+                        System.out.println("Digite um número válido");
+                        break;
+                    }
+                    int indexCandidato = buscarCandidato(candidatos, voto);
+                    if (indexCandidato >= 0) {
+                        System.out.println("Confirma?\n1-Sim\n2-Não");
+                        var confirmacao = teclado.next();
+                        if(confirmacao.equals("1")){
+                            candidatos.get(indexCandidato).setQtdVotos();
+                            totalVotos++;
+                        }else if(confirmacao.equals("2")){
+                            System.out.println("Tente novamente!");
+                        } else  {
+                            System.out.println("Entrada inválida");
+                        }
 
-            for (int i = 0; i < candidatos.length; i++) {
-
-                if (candidatos[i].getNumero() == voto) {
-                    candidatos[i].setQtdVotos();
-                    System.out.println("voce votou em: " + candidatos[i].getNome());
-                    votou = true;
+                    } else {
+                        System.out.println("numero do candidáto invalido");
+                    }
                     break;
-                } else if (i == 2) {
-                    System.out.println("numero invalido");
                 }
+                case 2 -> {
+                    if (totalVotos > 0) {
+                        System.out.println("Apuração de votos");
+                        apuracao(candidatos);
+                    } else {
+                        System.out.println("Eleição não realizada");
+                    }
+                    rerpetir = false;
+                }
+                default -> System.out.println("Opção inválida");
             }
-
-
-            System.out.println("Deseja sair \nS - sim\nN- não");
-            var sair = teclado.next().charAt(0);
-            if (sair == 's' || sair == 'S') {
-                rerpetir = false;
-
-
-                var totalVotos = candidatos[0].getQtdVotos()+candidatos[1].getQtdVotos()+candidatos[2].getQtdVotos();
-
-
-                if(candidatos[0].getQtdVotos()>candidatos[1].getQtdVotos() && candidatos[0].getQtdVotos()>candidatos[2].getQtdVotos()){
-                    System.out.println("O candidato "+ candidato1.getNome()+" ganhou a eleição com "+candidato1.getQtdVotos()+" votos "+ (candidato1.getQtdVotos()*100)/ totalVotos+"%");
-                }
-                if(candidatos[1].getQtdVotos()>candidatos[0].getQtdVotos() && candidatos[1].getQtdVotos()>candidatos[2].getQtdVotos()){
-                    System.out.println("O candidato "+ candidato2.getNome()+" ganhou a eleição com "+candidato2.getQtdVotos()+" votos "+ (candidato2.getQtdVotos()*100)/ totalVotos+"%");
-                }
-                if(candidatos[2].getQtdVotos()>candidatos[1].getQtdVotos() && candidatos[2].getQtdVotos()>candidatos[0].getQtdVotos()){
-                    System.out.println("O candidato "+ candidato3.getNome()+" ganhou a eleição com "+candidato3.getQtdVotos()+" votos "+ (candidato3.getQtdVotos()*100)/ totalVotos+"%");
-                }
-
-            }
-        }
+        }while (rerpetir);
 
     }
 
+    private static void apuracao(List<Candidato> candidatos) {
+        Collections.sort(candidatos);
+        var i = 0;
+
+        if(candidatos.get(0).getQtdVotos() == candidatos.get(2).getQtdVotos()){
+            System.out.println("Empate entre o candidato: \n"+candidatos.get(0)+"\n e o candidato: \n"+candidatos.get(1));
+            i++;
+        }
+        for (Candidato candidato: candidatos) {
+            if (i==0){
+                System.out.println(candidato+"\nGanhou a eleição com "+candidato.getQtdVotos()+" votos, "+(candidato.getQtdVotos()*100/totalVotos)+"%");
+                i++;
+            }else {
+                System.out.println(candidato+"\nteve "+candidato.getQtdVotos()+" votos, "+(candidato.getQtdVotos()*100/totalVotos)+"%");
+            }
+        }
+    }
+
+    private static int buscarCandidato(List<Candidato> candidatos, String voto) {
+        for (int i =0; i<candidatos.size(); i++) {
+
+            if (candidatos.get(i).getPartido().getNumero().equals(voto)) {
+                System.out.println(candidatos.get(i));
+
+                return i;
+            } else if( i == candidatos.size()){
+                System.out.println("Candidato não encontrado!");
+            }
+        }
+        return -1;
+    }
+
 }
+
+
